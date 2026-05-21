@@ -37,6 +37,10 @@ export const dataTableProps = {
       getColumnWidth: (key: ColumnKey) => number | undefined
     ) => void
   >,
+  virtualListMinHeight: {
+    type: [Number, String] as PropType<number | string | null>,
+    default: null
+  },
   pagination: {
     type: [Object, Boolean] as PropType<false | PaginationProps>,
     default: false

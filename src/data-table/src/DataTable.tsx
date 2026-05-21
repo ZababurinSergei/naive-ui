@@ -317,7 +317,8 @@ export default defineComponent({
       handleTableHeaderScroll,
       handleTableBodyScroll,
       setHeaderScrollLeft,
-      renderCell: toRef(props, 'renderCell')
+      renderCell: toRef(props, 'renderCell'),
+      virtualListMinHeight: toRef(props, 'virtualListMinHeight')
     })
     const exposedMethods: DataTableInst = {
       filter,
@@ -498,7 +499,11 @@ export default defineComponent({
         style={this.cssVars as CSSProperties}
       >
         <div class={`${mergedClsPrefix}-data-table-wrapper`}>
-          <MainTable ref="mainTableInstRef" />
+          <MainTable
+              {...this.$props}
+              virtualListMinHeight={this.virtualListMinHeight}
+              ref="mainTableInstRef"
+          />
         </div>
         {this.mergedShowPagination ? (
           <div class={`${mergedClsPrefix}-data-table__pagination`}>

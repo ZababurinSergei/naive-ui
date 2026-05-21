@@ -11,7 +11,13 @@ import TableHeader from './TableParts/Header'
 
 export default defineComponent({
   name: 'MainTable',
-  setup() {
+  props: {
+    virtualListMinHeight: {
+      type: [Number, String] as PropType<number | string | null>,
+      default: null
+    }
+  },
+  setup(props) {
     const {
       mergedClsPrefixRef,
       rightFixedColumnsRef,
@@ -96,11 +102,12 @@ export default defineComponent({
       flexHeight: flexHeightRef,
       handleBodyResize,
       scrollX: scrollXRef,
+      virtualListMinHeight: props.virtualListMinHeight,
       ...exposedMethods
     }
   },
   render() {
-    const { mergedClsPrefix, maxHeight, flexHeight } = this
+    const { mergedClsPrefix, maxHeight, flexHeight, virtualListMinHeight } = this
     const headerInBody = maxHeight === undefined && !flexHeight
     return (
       <div class={`${mergedClsPrefix}-data-table-base-table`} ref="selfElRef">
@@ -111,6 +118,7 @@ export default defineComponent({
           showHeader={headerInBody}
           flexHeight={flexHeight}
           onResize={this.handleBodyResize}
+          virtualListMinHeight={virtualListMinHeight}
         />
       </div>
     )

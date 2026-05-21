@@ -23,7 +23,7 @@ import {
   ref,
   watchEffect
 } from 'vue'
-import { VirtualList, VResizeObserver } from 'vueuc'
+import { VirtualList, VResizeObserver } from '../../../vueuc/src'
 import { NScrollbar } from '../../../_internal'
 import { cssrAnchorMetaName } from '../../../_mixins/common'
 import { formatLength, resolveSlot, warn } from '../../../_utils'
@@ -152,7 +152,11 @@ export default defineComponent({
     onResize: Function as PropType<(e: ResizeObserverEntry) => void>,
     showHeader: Boolean,
     flexHeight: Boolean,
-    bodyStyle: Object as PropType<CSSProperties>
+    bodyStyle: Object as PropType<CSSProperties>,
+    virtualListMinHeight: {
+      type: [Number, String] as PropType<number | string | null>,
+      default: null
+    }
   },
   setup(props) {
     const {
@@ -203,8 +207,10 @@ export default defineComponent({
       doUncheck,
       renderCell,
       xScrollableRef,
-      explicitlyScrollableRef
+      explicitlyScrollableRef,
+      virtualListMinHeight
     } = inject(dataTableInjectionKey)!
+
     const NConfigProvider = inject(configProviderInjectionKey)
     const scrollbarInstRef = ref<ScrollbarInst | null>(null)
     const virtualListRef = ref<VirtualListInst | null>(null)
@@ -434,7 +440,18 @@ export default defineComponent({
         parent: NConfigProvider?.styleMountTarget
       })
     })
+
+    const customMinHeight = computed(() => {
+      if (props.virtualListMinHeight) {
+        const height = typeof props.virtualListMinHeight === 'number'
+            ? props.virtualListMinHeight
+            : parseInt(props.virtualListMinHeight as string, 10)
+        return !isNaN(height) && height > 0 ? `${height}px` : undefined
+      }
+      return undefined
+    })
     return {
+      customMinHeight,
       bodyWidth: bodyWidthRef,
       summaryPlacement: summaryPlacementRef,
       dataTableSlots,
@@ -1098,6 +1115,12 @@ export default defineComponent({
               )
             }
             else {
+
+              const virtualListStyle = {
+                ...contentStyle,
+                ...(this.customMinHeight && { minHeight: this.customMinHeight })
+              }
+
               return (
                 <VirtualList
                   ref="virtualListRef"
@@ -1113,7 +1136,7 @@ export default defineComponent({
                   showScrollbar={false}
                   onResize={this.handleVirtualListResize}
                   onScroll={this.handleVirtualListScroll}
-                  itemsStyle={contentStyle}
+                  itemsStyle={virtualListStyle}
                   itemResizable={!virtualScrollX}
                   columns={cols}
                   renderItemWithCols={
