@@ -159,6 +159,7 @@ export default defineComponent({
     }
   },
   setup(props) {
+    console.log('(((((((((((((( !!!! (((((((((((((((((((((((((((((', props)
     const {
       slots: dataTableSlots,
       bodyWidthRef,
@@ -285,6 +286,7 @@ export default defineComponent({
     }
 
     function getScrollContainer(): HTMLElement | null {
+      console.log('DDDDDDDDDDDDDDDDDDDDDDDDDDDDD')
       if (shouldDisplayVirtualListRef.value) {
         return virtualListContainer()
       }
@@ -344,11 +346,13 @@ export default defineComponent({
       return value?.itemsElRef || null
     }
     function handleVirtualListScroll(e: Event): void {
+      console.log('UUUUUUUUUUUUUU handleVirtualListScroll UUUUUUUUUUUUUUUUUU', e)
       handleTableBodyScroll(e)
       scrollbarInstRef.value?.sync()
     }
     function handleVirtualListResize(e: ResizeObserverEntry): void {
       const { onResize } = props
+      console.log('UUUUUUUUUUUUUU handleVirtualListResize UUUUUUUUUUUUUUUUUU', e)
       if (onResize)
         onResize(e)
       scrollbarInstRef.value?.sync()
@@ -450,6 +454,7 @@ export default defineComponent({
       }
       return undefined
     })
+    console.log('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', props.virtualListMinHeight, props)
     return {
       customMinHeight,
       bodyWidth: bodyWidthRef,
@@ -551,6 +556,7 @@ export default defineComponent({
       shouldDisplayVirtualList
     } = this
 
+    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
     const contentStyle: CSSProperties = {
       minWidth: formatLength(scrollX) || '100%'
     }
